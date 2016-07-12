@@ -3,6 +3,8 @@ package sample;
 import com.sun.istack.internal.Nullable;
 import globals.Components;
 import globals.*;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import tables.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -24,6 +26,7 @@ import java.util.Iterator;
 import java.util.ResourceBundle;
 
 import static globals.Components.foreignKeyInfoBox;
+import static globals.Components.ok;
 
 public class Controller implements Initializable {
 
@@ -199,6 +202,28 @@ public class Controller implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         ObservableList<String> values2 = FXCollections.observableArrayList();
 
+        isPrimary.selectedProperty().addListener(new ChangeListener<Boolean>() {
+            @Override
+            public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+                if (isPrimary.isSelected()) {
+                    isForeign.setDisable(true);
+                } else {
+                    isForeign.setDisable(false);
+                }
+            }
+        });
+
+        isForeign.selectedProperty().addListener(new ChangeListener<Boolean>() {
+            @Override
+            public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+                if (isForeign.isSelected()) {
+                    isPrimary.setDisable(true);
+                } else {
+                    isPrimary.setDisable(false);
+                }
+            }
+        });
+
         // Add values to OberservableList values
         values2.addAll("Text", "Decimal", "Integer");
 
@@ -214,32 +239,37 @@ public class Controller implements Initializable {
     }
 
     public void delete(ActionEvent actionEvent) {
-        if (selectTableDelete.getValue() != null) {
-            String table = (String) selectTableDelete.getValue();
 
-            for (Iterator<Table> iterator = allTables.iterator(); iterator.hasNext();) {
-                Table t = iterator.next();
-                if (t.getName().equals(table)) {
-                    iterator.remove();
-                    setTable();
-                    Logger.log(LogTags.INFO, "Controller.delete(): Tabelle '" + t.getName() + "' gelöscht!");
-                    refresh();
+        if (ok("Warning", "Delete table '" + selectTableDelete.getValue() + "' ?")) {
+
+            if (selectTableDelete.getValue() != null) {
+                String table = (String) selectTableDelete.getValue();
+
+                for (Iterator<Table> iterator = allTables.iterator(); iterator.hasNext(); ) {
+                    Table t = iterator.next();
+                    if (t.getName().equals(table)) {
+                        iterator.remove();
+                        setTable();
+                        Logger.log(LogTags.INFO, "Controller.delete(): Tabelle '" + t.getName() + "' gelöscht!");
+                        refresh();
+                    }
                 }
-            }for (Iterator<Table> iterator = allTables.iterator(); iterator.hasNext();) {
-                Table t = iterator.next();
-                if (t.getName().equals(table)) {
-                    iterator.remove();
-                    setTable();
-                    Logger.log(LogTags.INFO, "Controller.delete(): Tabelle '" + t.getName() + "' gelöscht!");
-                    refresh();
+                for (Iterator<Table> iterator = allTables.iterator(); iterator.hasNext(); ) {
+                    Table t = iterator.next();
+                    if (t.getName().equals(table)) {
+                        iterator.remove();
+                        setTable();
+                        Logger.log(LogTags.INFO, "Controller.delete(): Tabelle '" + t.getName() + "' gelöscht!");
+                        refresh();
+                    }
                 }
+
+                tablePane.getChildren().clear();
+            } else {
+                Components.simpleInfoBox("Info", "Please choose a table to delete!");
             }
-
-            tablePane.getChildren().clear();
-        } else {
-            Components.simpleInfoBox("Info", "Please choose a table to delete!");
+            refresh();
         }
-        refresh();
     }
 
     public void deleteAll(ActionEvent actionEvent) {
@@ -319,23 +349,22 @@ public class Controller implements Initializable {
     }
 
     public void primarySelected(ActionEvent actionEvent) {
+
         String curTbl = (String) selectTable.getValue();
 
         for (Table t : allTables) {
             if (t.getName().equals(curTbl)) {
                 if (isPrimary.isSelected() && t.hasPrimary()) {
                     Components.simpleInfoBox("Info", "Table already has a Primary Key!");
-                    isPrimary.setSelected(false);
-                    isForeign.setDisable(false);
                     return;
                 }
             }
         }
 
         datatype.setValue("Integer");
-        isForeign.setDisable(true);
         refresh();
     }
+
 
     public void foreignSelected(ActionEvent actionEvent) {
         String curTbl = (String) selectTable.getValue();
@@ -355,7 +384,6 @@ public class Controller implements Initializable {
                     if (!hasPrimary) {
                         Components.simpleInfoBox("Info", "There is no table with a primary key!");
                         isForeign.setSelected(false);
-                        isPrimary.setDisable(false);
                         return;
                     }
                 }
@@ -363,7 +391,6 @@ public class Controller implements Initializable {
         }
 
         datatype.setValue("Integer");
-        isPrimary.setDisable(true);
         refresh();
     }
 
