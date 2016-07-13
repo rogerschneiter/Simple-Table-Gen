@@ -1,6 +1,5 @@
 package sample;
 
-import com.sun.istack.internal.Nullable;
 import globals.Components;
 import globals.ForeignKeyReference;
 import globals.LogTags;
@@ -21,6 +20,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import org.jetbrains.annotations.Nullable;
 import tables.Attribute;
 import tables.Datatype;
 import tables.Exports;
@@ -148,9 +148,33 @@ public class Controller implements Initializable {
     private ChangeListener changeTabWhileHelpListener = new ChangeListener() {
         @Override
         public void changed(ObservableValue observable, Object oldValue, Object newValue) {
-            Logger.log(LogTags.COMMENT, "!TAB CHANGED!");
+            killHelp();
+            tabPane.getSelectionModel().selectedItemProperty().removeListener(changeTabWhileHelpListener);
         }
     };
+
+    private void killHelp() {
+        // Kill everything from Table Create Help
+        helpTextCreate.setText("");
+        createTable.setStyle("-fx-border-color: none");
+        tableName.setStyle("-fx-border-color: none");
+        tableName.textProperty().removeListener(tableChangeListener);
+
+        // Kill everything from Modify Table Help
+        attributeName.textProperty().removeListener(attrChangeListener);
+        datatype.valueProperty().removeListener(datatypeChangeListener);
+        attributeName.setStyle("-fx-border-color: none");
+        addButton.setStyle("-fx-border-color: none");
+        attributeName.setText("");
+
+        // Kill everything from Export Table Help
+        wayOfExport.valueProperty().removeListener(wayOfExportChangeListener);
+        tableToExport.valueProperty().removeListener(exportTableChangListener);
+        wayOfExport.setStyle("-fx-border-color: none");
+        tableToExport.setStyle("-fx-border-color: none");
+        exportButton.setStyle("-fx-border-color: none");
+        exportHelpText.setText("");
+    }
 
     public void createTable() {
         // If Text is not empty, then:
@@ -535,7 +559,6 @@ public class Controller implements Initializable {
         refresh();
     }
 
-
     public void foreignSelected() {
         String curTbl = selectTable.getValue();
 
@@ -742,6 +765,7 @@ public class Controller implements Initializable {
 
     private void showTipsExportTable() {
         if (allTables.size() != 0) {
+            tableToExport.setValue(null);
             SingleSelectionModel<Tab> tabModel = tabPane.getSelectionModel();
             tabModel.select(3);
             tableToExport.setStyle("-fx-border-color: red");
