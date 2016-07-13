@@ -12,8 +12,8 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception{
         Parent root = FXMLLoader.load(getClass().getResource("sample.fxml"));
-        Image anotherIcon = new Image(getClass().getResourceAsStream("stgicon.png"));
-        primaryStage.getIcons().add(anotherIcon);
+        Image icon = new Image(getClass().getResourceAsStream("\\res\\icon.png"));
+        primaryStage.getIcons().addAll(icon);
         primaryStage.setTitle("Simple Table Gen V 0.1");
         primaryStage.setScene(new Scene(root, 750, 500));
         primaryStage.show();

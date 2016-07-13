@@ -1,10 +1,8 @@
 package sample;
 
 import com.sun.istack.internal.Nullable;
-import globals.Components;
-import globals.ForeignKeyReference;
-import globals.LogTags;
-import globals.Logger;
+import globals.*;
+import javafx.application.Platform;
 import javafx.beans.property.ReadOnlyIntegerWrapper;
 import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.beans.value.ChangeListener;
@@ -48,6 +46,9 @@ public class Controller implements Initializable {
     public AnchorPane tabAlter;
     public AnchorPane tabDel;
     public AnchorPane tabInsert;
+    public Button deleteAttribute;
+    public Button newInsert;
+    public Button createTable;
     private ArrayList<Table> allTables = new ArrayList<>();
 
     public void createTable(ActionEvent actionEvent) {
@@ -81,6 +82,7 @@ public class Controller implements Initializable {
         } else {
             Components.simpleInfoBox("Info", "Tablename cannot be empty!");
         }
+        checkTabStatus();
         refresh();
     }
 
@@ -266,7 +268,6 @@ public class Controller implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        ObservableList<String> values2 = FXCollections.observableArrayList();
 
         isPrimary.selectedProperty().addListener(new ChangeListener<Boolean>() {
             @Override
@@ -290,18 +291,23 @@ public class Controller implements Initializable {
             }
         });
 
-        // Add values to OberservableList values
+        ObservableList<String> values2 = FXCollections.observableArrayList();
         values2.addAll("Text", "Decimal", "Integer");
-
-        // Set Value to ComboBox selectTable
         datatype.setItems(values2);
 
         ObservableList<String> values3 = FXCollections.observableArrayList();
-
         values3.addAll("HTML", "SQLite", "MySQL");
-
         wayOfExport.setItems(values3);
+
+        checkTabStatus();
         refresh();
+
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                tableName.requestFocus();
+            }
+        });
     }
 
     public void delete(ActionEvent actionEvent) {
@@ -398,6 +404,7 @@ public class Controller implements Initializable {
             Components.simpleInfoBox("Info", "Please choose an attribute to delete!");
         }
         selectAttribute.setItems(null);
+        checkChoiceBoxes();
         refresh();
     }
 
@@ -523,11 +530,49 @@ public class Controller implements Initializable {
             tabAlter.setDisable(true);
             tabDel.setDisable(true);
             tabInsert.setDisable(true);
+            selectTable.setDisable(true);
         } else {
             tabExport.setDisable(false);
             tabAlter.setDisable(false);
             tabDel.setDisable(false);
             tabInsert.setDisable(false);
+            selectTable.setDisable(false);
         }
+
+        checkChoiceBoxes();
+        checkInsertPossible();
+    }
+
+    private void checkChoiceBoxes() {
+        if (selectedTable() != null) {
+            if (selectedTable().getAttributes().size() == 0) {
+                selectAttribute.setDisable(true);
+                deleteAttribute.setDisable(true);
+            } else {
+                selectAttribute.setDisable(false);
+                deleteAttribute.setDisable(false);
+            }
+        } else {
+            selectAttribute.setDisable(true);
+            deleteAttribute.setDisable(true);
+        }
+    }
+
+    private void checkInsertPossible() {
+        if (selectedTable() != null) {
+            if (selectedTable().getAttributes().size() == 0) {
+                newInsert.setDisable(true);
+            } else {
+                newInsert.setDisable(false);
+            }
+        }
+    }
+
+    public void newInsert(ActionEvent actionEvent) {
+        Components.simpleInfoBox("Info", "Not implemented yet!");
+    }
+
+    public void showHelp(ActionEvent actionEvent) {
+        new Help();
     }
 }
