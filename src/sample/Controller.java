@@ -2,28 +2,29 @@ package sample;
 
 import com.sun.istack.internal.Nullable;
 import globals.Components;
-import globals.*;
+import globals.ForeignKeyReference;
+import globals.LogTags;
+import globals.Logger;
+import javafx.beans.property.ReadOnlyIntegerWrapper;
+import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import tables.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.event.Event;
 import javafx.fxml.Initializable;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
+import org.w3c.dom.Attr;
 import tables.Attribute;
 import tables.Datatype;
 import tables.Exports;
 import tables.Table;
 
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.ResourceBundle;
+import java.util.*;
 
 import static globals.Components.foreignKeyInfoBox;
 import static globals.Components.ok;
@@ -42,12 +43,26 @@ public class Controller implements Initializable {
     public CheckBox isPrimary;
     public CheckBox isForeign;
     public VBox tablePane;
+    public VBox dataPane;
+    public AnchorPane tabExport;
+    public AnchorPane tabAlter;
+    public AnchorPane tabDel;
+    public AnchorPane tabInsert;
     private ArrayList<Table> allTables = new ArrayList<>();
 
     public void createTable(ActionEvent actionEvent) {
         // If Text is not empty, then:
         if (tableName.getText() != null && !tableName.getText().equals("")) {
-            // Create new Instance Table
+            // Create new Instance Table if not exists
+
+            for (Table t : allTables) {
+                if (t.getName().equals(tableName.getText())) {
+                    Components.simpleInfoBox("Info", "Table already exists!");
+                    tableName.setText("");
+                    return;
+                }
+            }
+
             Table t = new Table(tableName.getText());
 
             // Add Table Instance to ArrayList allTables
@@ -100,7 +115,7 @@ public class Controller implements Initializable {
     private void showTable(Table t) {
         if (t != null) {
             // clear tablePane
-            tablePane.getChildren().clear();
+            dataPane.getChildren().clear();
 
             // Create new TableView
             TableView<String> table = new TableView<String>();
@@ -114,9 +129,51 @@ public class Controller implements Initializable {
             }
 
             // Add table to tablePane
-            tablePane.getChildren().add(table);
+            dataPane.getChildren().add(table);
             refresh();
         }
+
+        ArrayList<String> attributeValues = new ArrayList<>();
+        for (Attribute a : t.getAttributes()) {
+            attributeValues.add(a.getName());
+        }
+
+        ArrayList<String> datatypeValues = new ArrayList<>();
+        for (Attribute a : t.getAttributes()) {
+            String entry = a.getDatatyp().toString();
+            if (a.isPrimaryKey()) {
+                entry += " (Primary Key)";
+            } else if (a.isForeignKey()) {
+                entry += " (Foreign Key)";
+            }
+            datatypeValues.add(entry);
+        }
+
+        TableView<Integer> table = new TableView<>();
+        table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+
+        for (int i = 0; i < attributeValues.size(); i++) {
+            table.getItems().add(i);
+        }
+
+        TableColumn<Integer, String> attributeColumn = new TableColumn<>("Attribute");
+        attributeColumn.setCellValueFactory(cellData -> {
+            Integer rowIndex = cellData.getValue();
+            return new ReadOnlyStringWrapper(attributeValues.get(rowIndex));
+        });
+
+        TableColumn<Integer, String> datatypeColumn = new TableColumn<>("Datatype");
+        datatypeColumn.setCellValueFactory(cellData -> {
+            Integer rowIndex = cellData.getValue();
+            return new ReadOnlyStringWrapper(datatypeValues.get(rowIndex));
+        });
+
+        table.getColumns().add(attributeColumn);
+        table.getColumns().add(datatypeColumn);
+        table.setEditable(true);
+
+        tablePane.getChildren().clear();
+        tablePane.getChildren().add(table);
     }
 
     public void setTable() {
@@ -143,6 +200,15 @@ public class Controller implements Initializable {
         } else {
             Components.simpleInfoBox("Info", "Attributename cannot be empty");
             return;
+        }
+
+        for (Attribute attrValid : selectedTable().getAttributes()) {
+            if (attrName.equals(attrValid.getName())) {
+                Components.simpleInfoBox("Info", "Attribute already exists!");
+                attributeName.setText("");
+                refresh();
+                return;
+            }
         }
 
         if (datatype.getValue() != null) {
@@ -173,8 +239,8 @@ public class Controller implements Initializable {
             a.setRefTable(forKeyT);
             a.setRefAttribute(forKeyA);
 
-            Logger.log(LogTags.COMMENT, "Controller.addAttribute(): Referenced Table: '"+a.getRefTable().getName()+"' "+
-                    "Attribute: '"+a.getRefAttribute().getName() + "'");
+            Logger.log(LogTags.COMMENT, "Controller.addAttribute(): Referenced Table: '" + a.getRefTable().getName() + "' " +
+                    "Attribute: '" + a.getRefAttribute().getName() + "'");
         }
 
         // Get Value of selected Item
@@ -264,26 +330,30 @@ public class Controller implements Initializable {
                     }
                 }
 
+                dataPane.getChildren().clear();
                 tablePane.getChildren().clear();
             } else {
                 Components.simpleInfoBox("Info", "Please choose a table to delete!");
             }
             refresh();
+            checkTabStatus();
         }
     }
 
     public void deleteAll(ActionEvent actionEvent) {
-        if (Components.ok("Warning","Delete all tables?")) {
+        if (Components.ok("Warning", "Delete all tables?")) {
             allTables.clear();
             refresh();
+            dataPane.getChildren().clear();
             tablePane.getChildren().clear();
         }
+        checkTabStatus();
     }
 
     @Nullable
     private Table selectedTable() {
 
-        String curT = (String)selectTable.getValue();
+        String curT = (String) selectTable.getValue();
 
         for (Table t : allTables) {
             if (t.getName().equals(curT)) {
@@ -300,6 +370,25 @@ public class Controller implements Initializable {
             for (Iterator<Attribute> iterator = selectedTable().getAttributes().iterator(); iterator.hasNext(); ) {
                 Attribute a = iterator.next();
                 if (a.getName().equals(attrToDel)) {
+
+                    if (a.isPrimaryKey()) {
+                        for (Table t : allTables) {
+                            for (Iterator<Attribute> attributeIterator = t.getAttributes().iterator(); attributeIterator.hasNext(); ) {
+                                Attribute a1 = attributeIterator.next();
+                                if (a1.isForeignKey()) {
+                                    if (a1.getRefAttribute() == a) {
+                                        if (ok("Warning", "Primary key is referenced by: " + a1.getName()
+                                                + "This will delete the foreign key reference!")) {
+                                            attributeIterator.remove();
+                                        } else {
+                                            return;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+
                     iterator.remove();
                     Logger.log(LogTags.INFO, "Controller.deleteAttribute(): Attribut '" + a.getName() + "' gelöscht!");
                     refresh();
@@ -308,6 +397,7 @@ public class Controller implements Initializable {
         } else {
             Components.simpleInfoBox("Info", "Please choose an attribute to delete!");
         }
+        selectAttribute.setItems(null);
         refresh();
     }
 
@@ -322,7 +412,7 @@ public class Controller implements Initializable {
             return;
         }
 
-        String curTbl = (String)tableToExport.getValue();
+        String curTbl = (String) tableToExport.getValue();
         Table tToExport = null;
 
         for (Table t : allTables) {
@@ -331,9 +421,9 @@ public class Controller implements Initializable {
             }
         }
 
-        String export = (String)wayOfExport.getValue();
+        String export = (String) wayOfExport.getValue();
 
-        switch(export) {
+        switch (export) {
             case "HTML":
                 Exports.toHTML(tToExport);
                 break;
@@ -354,8 +444,9 @@ public class Controller implements Initializable {
 
         for (Table t : allTables) {
             if (t.getName().equals(curTbl)) {
-                if (isPrimary.isSelected() && t.hasPrimary()) {
+                if (isPrimary.isSelected() && t.hasPrimary() && t == selectedTable()) {
                     Components.simpleInfoBox("Info", "Table already has a Primary Key!");
+                    isPrimary.setSelected(false);
                     return;
                 }
             }
@@ -405,9 +496,9 @@ public class Controller implements Initializable {
             return;
         }
 
-        String export = (String)wayOfExport.getValue();
+        String export = (String) wayOfExport.getValue();
 
-        switch(export) {
+        switch (export) {
             case "HTML":
                 Exports.toHTML(allTables);
                 break;
@@ -420,5 +511,23 @@ public class Controller implements Initializable {
         }
 
         refresh();
+    }
+
+    public void deactivateTabs(Event event) {
+        checkTabStatus();
+    }
+
+    private void checkTabStatus() {
+        if (allTables.size() == 0) {
+            tabExport.setDisable(true);
+            tabAlter.setDisable(true);
+            tabDel.setDisable(true);
+            tabInsert.setDisable(true);
+        } else {
+            tabExport.setDisable(false);
+            tabAlter.setDisable(false);
+            tabDel.setDisable(false);
+            tabInsert.setDisable(false);
+        }
     }
 }

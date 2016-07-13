@@ -33,9 +33,10 @@
                                 </AnchorPane>
                             </content>
                         </Tab>
-                        <Tab text="ALTER">
+                        <Tab text="ALTER" onSelectionChanged="#deactivateTabs">
                             <content>
-                                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0"
+                                            fx:id="tabAlter">
                                     <children>
                                         <HBox alignment="CENTER_LEFT" prefHeight="111.0" prefWidth="748.0" spacing="10.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
                                             <children>
@@ -50,9 +51,10 @@
                                 </AnchorPane>
                             </content>
                         </Tab>
-                        <Tab text="DELETE">
+                        <Tab text="DELETE" onSelectionChanged="#deactivateTabs">
                             <content>
-                                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0"
+                                            fx:id="tabDel">
                                     <children>
                                         <HBox alignment="CENTER_LEFT" prefHeight="111.0" prefWidth="748.0" spacing="10.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
                                             <children>
@@ -72,9 +74,10 @@
                                 </AnchorPane>
                             </content>
                         </Tab>
-                        <Tab text="EXPORT">
+                        <Tab text="EXPORT" onSelectionChanged="#deactivateTabs">
                             <content>
-                                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0"
+                                            fx:id="tabExport">
                                     <children>
                                         <HBox alignment="CENTER_LEFT" prefHeight="111.0" prefWidth="748.0" spacing="10.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
                                             <children>
@@ -92,6 +95,25 @@
                                 </AnchorPane>
                             </content>
                         </Tab>
+                        <Tab text="INSERT" onSelectionChanged="#deactivateTabs">
+                            <content>
+                                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0"
+                                            fx:id="tabInsert">
+                                    <children>
+                                        <HBox alignment="CENTER_LEFT" layoutX="10.0" layoutY="10.0" prefHeight="111.0"
+                                              prefWidth="748.0" spacing="10.0" AnchorPane.bottomAnchor="10.0"
+                                              AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0"
+                                              AnchorPane.topAnchor="10.0">
+                                            <children>
+                                                <Button mnemonicParsing="false" onAction="#createTable"
+                                                        text="New Insert"/>
+                                                <Label text="Currently only works for tables without foreign keys!"/>
+                                            </children>
+                                        </HBox>
+                                    </children>
+                                </AnchorPane>
+                            </content>
+                        </Tab>
                     </tabs>
                 </TabPane>
             </children></AnchorPane>
@@ -103,7 +125,7 @@
                             <children>
                         <TabPane prefHeight="343.0" prefWidth="518.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                           <tabs>
-                            <Tab text="TABLE">
+                              <Tab text="STRUCTURE">
                               <content>
                                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                        <children>
@@ -112,9 +134,15 @@
                                     </AnchorPane>
                               </content>
                             </Tab>
-                            <Tab text="DATA">
+                              <Tab text="TABLE DATA">
                               <content>
-                                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                      <children>
+                                          <VBox fx:id="dataPane" prefHeight="304.0" prefWidth="518.0"
+                                                AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
+                                                AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0"/>
+                                      </children>
+                                  </AnchorPane>
                               </content>
                             </Tab>
                           </tabs>
