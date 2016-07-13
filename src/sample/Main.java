@@ -15,7 +15,10 @@ public class Main extends Application {
         Image icon = new Image(getClass().getResourceAsStream("\\res\\icon.png"));
         primaryStage.getIcons().addAll(icon);
         primaryStage.setTitle("Simple Table Gen V 0.1");
-        primaryStage.setScene(new Scene(root, 750, 500));
+        Scene s = new Scene(root, 750, 500);
+        s.getStylesheets().add(getClass().getResource("\\res\\style.css").toExternalForm());
+
+        primaryStage.setScene(s);
         primaryStage.show();
     }
 
