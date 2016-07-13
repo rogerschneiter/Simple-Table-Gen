@@ -64,6 +64,39 @@ public class Controller implements Initializable {
     public Label exportHelpText;
     private ArrayList<Table> allTables = new ArrayList<>();
 
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+
+        isPrimary.selectedProperty().addListener((observable, oldValue, newValue) -> {
+            if (isPrimary.isSelected()) {
+                isForeign.setDisable(true);
+            } else {
+                isForeign.setDisable(false);
+            }
+        });
+
+        isForeign.selectedProperty().addListener((observable, oldValue, newValue) -> {
+            if (isForeign.isSelected()) {
+                isPrimary.setDisable(true);
+            } else {
+                isPrimary.setDisable(false);
+            }
+        });
+
+        ObservableList<String> values2 = FXCollections.observableArrayList();
+        values2.addAll("Text", "Decimal", "Integer");
+        datatype.setItems(values2);
+
+        ObservableList<String> values3 = FXCollections.observableArrayList();
+        values3.addAll("HTML", "SQLite", "MySQL");
+        wayOfExport.setItems(values3);
+
+        checkTabStatus();
+        refresh();
+
+        Platform.runLater(() -> tableName.requestFocus());
+    }
+
     private ChangeListener tableChangeListener = new ChangeListener() {
         @Override
         public void changed(ObservableValue observable, Object oldValue, Object newValue) {
@@ -332,39 +365,6 @@ public class Controller implements Initializable {
         isForeign.setDisable(false);
         isPrimary.setDisable(false);
         refresh();
-    }
-
-    @Override
-    public void initialize(URL location, ResourceBundle resources) {
-
-        isPrimary.selectedProperty().addListener((observable, oldValue, newValue) -> {
-            if (isPrimary.isSelected()) {
-                isForeign.setDisable(true);
-            } else {
-                isForeign.setDisable(false);
-            }
-        });
-
-        isForeign.selectedProperty().addListener((observable, oldValue, newValue) -> {
-            if (isForeign.isSelected()) {
-                isPrimary.setDisable(true);
-            } else {
-                isPrimary.setDisable(false);
-            }
-        });
-
-        ObservableList<String> values2 = FXCollections.observableArrayList();
-        values2.addAll("Text", "Decimal", "Integer");
-        datatype.setItems(values2);
-
-        ObservableList<String> values3 = FXCollections.observableArrayList();
-        values3.addAll("HTML", "SQLite", "MySQL");
-        wayOfExport.setItems(values3);
-
-        checkTabStatus();
-        refresh();
-
-        Platform.runLater(() -> tableName.requestFocus());
     }
 
     public void delete() {
