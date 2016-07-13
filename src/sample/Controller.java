@@ -12,9 +12,15 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.fxml.Initializable;
+import javafx.geometry.Pos;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import org.w3c.dom.Attr;
 import tables.Attribute;
 import tables.Datatype;
@@ -574,5 +580,77 @@ public class Controller implements Initializable {
 
     public void showHelp(ActionEvent actionEvent) {
         new Help();
+    }
+
+    private class Help {
+
+        private Stage tempStage;
+
+        public Help() {
+            Stage window = buildWindow("Help");
+            Label l = new Label("Click to start!");
+            l.setWrapText(true);
+
+            Button createStage = new Button("Create tables");
+            createStage.setPrefWidth(150);
+            createStage.setOnAction(e -> {
+                showTipsCreateTable();
+                window.close();
+            });
+
+            Button modifyStage = new Button("Modify tables");
+            modifyStage.setPrefWidth(150);
+            modifyStage.setOnAction(e -> {
+                showTipsModifyTable();
+                window.close();
+            });
+
+            Button exportTables = new Button("Export tables");
+            exportTables.setPrefWidth(150);
+            exportTables.setOnAction(e -> {
+                showTipsExportTable();
+                window.close();
+            });
+
+            Button exitButton = new Button("Quit");
+            exitButton.setPrefWidth(100);
+            exitButton.setOnAction(e -> {
+                window.close();
+            });
+
+            VBox layout = new VBox(15);
+            layout.getChildren().addAll(l, createStage, modifyStage, exportTables, exitButton);
+            layout.setAlignment(Pos.CENTER);
+
+            layout.setOnKeyReleased(e ->
+            {
+                if (e.getCode() == KeyCode.ESCAPE)
+                    window.close();
+            });
+
+            window.setScene(new Scene(layout, 350, 300));
+            window.show();
+        }
+
+        private Stage buildWindow(String title) {
+            tempStage = new Stage();
+            tempStage.initStyle(StageStyle.UTILITY);
+            tempStage.setResizable(false);
+            tempStage.initModality(Modality.APPLICATION_MODAL);
+            tempStage.setTitle(title);
+            return tempStage;
+        }
+    }
+
+    private void showTipsCreateTable() {
+
+    }
+
+    private void showTipsModifyTable() {
+
+    }
+
+    private void showTipsExportTable() {
+
     }
 }
