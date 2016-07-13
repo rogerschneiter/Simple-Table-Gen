@@ -1,16 +1,16 @@
 package sample;
 
 import com.sun.istack.internal.Nullable;
-import globals.*;
+import globals.Components;
+import globals.ForeignKeyReference;
+import globals.LogTags;
+import globals.Logger;
 import javafx.application.Platform;
-import javafx.beans.property.ReadOnlyIntegerWrapper;
 import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
-import javafx.event.Event;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -21,14 +21,16 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-import org.w3c.dom.Attr;
 import tables.Attribute;
 import tables.Datatype;
 import tables.Exports;
 import tables.Table;
 
 import java.net.URL;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.ResourceBundle;
+import java.util.stream.Collectors;
 
 import static globals.Components.foreignKeyInfoBox;
 import static globals.Components.ok;
@@ -37,13 +39,13 @@ public class Controller implements Initializable {
 
     // Declaration of Variables
     public TextField tableName;
-    public ComboBox selectTable;
+    public ComboBox<String> selectTable;
     public TextField attributeName;
-    public ComboBox datatype;
-    public ComboBox selectTableDelete;
-    public ComboBox selectAttribute;
-    public ComboBox tableToExport;
-    public ComboBox wayOfExport;
+    public ComboBox<String> datatype;
+    public ComboBox<String> selectTableDelete;
+    public ComboBox<String> selectAttribute;
+    public ComboBox<String> tableToExport;
+    public ComboBox<String> wayOfExport;
     public CheckBox isPrimary;
     public CheckBox isForeign;
     public VBox tablePane;
@@ -55,9 +57,62 @@ public class Controller implements Initializable {
     public Button deleteAttribute;
     public Button newInsert;
     public Button createTable;
+    public Label helpTextCreate;
+    public TabPane tabPane;
+    public Button addButton;
+    public Button exportButton;
+    public Label exportHelpText;
     private ArrayList<Table> allTables = new ArrayList<>();
 
-    public void createTable(ActionEvent actionEvent) {
+    private ChangeListener tableChangeListener = new ChangeListener() {
+        @Override
+        public void changed(ObservableValue observable, Object oldValue, Object newValue) {
+            if (newValue != null && !newValue.equals("")) {
+                tableName.setStyle("-fx-border-color: none");
+                tableName.setPromptText("Table");
+                createTable.setStyle("-fx-border-color: red");
+                helpTextCreate.setText("<-- Click here to create table!");
+            }
+        }
+    };
+
+    private ChangeListener datatypeChangeListener = new ChangeListener() {
+        @Override
+        public void changed(ObservableValue observable, Object oldValue, Object newValue) {
+            datatype.setStyle("-fx-border-color: none");
+            addButton.setStyle("-fx-border-color: red");
+        }
+    };
+
+    private ChangeListener attrChangeListener = new ChangeListener() {
+        @Override
+        public void changed(ObservableValue observable, Object oldValue, Object newValue) {
+            attributeName.setPromptText("Attribute");
+            attributeName.setStyle("-fx-border-color: none");
+            datatype.setStyle("-fx-border-color: red");
+        }
+    };
+
+    private ChangeListener wayOfExportChangeListener = new ChangeListener() {
+        @Override
+        public void changed(ObservableValue observable, Object oldValue, Object newValue) {
+            tableToExport.valueProperty().removeListener(exportTableChangListener);
+            wayOfExport.setStyle("-fx-border-color: none");
+            exportButton.setStyle("-fx-border-color: red");
+            exportHelpText.setText("<-- Click to export all tables!");
+        }
+    };
+
+    private ChangeListener exportTableChangListener = new ChangeListener() {
+        @Override
+        public void changed(ObservableValue observable, Object oldValue, Object newValue) {
+            tableToExport.setStyle("-fx-border-color: none");
+            wayOfExport.setStyle("-fx-border-color: red");
+            wayOfExport.valueProperty().addListener(wayOfExportChangeListener);
+        }
+    };
+
+    public void createTable() {
         // If Text is not empty, then:
         if (tableName.getText() != null && !tableName.getText().equals("")) {
             // Create new Instance Table if not exists
@@ -88,18 +143,20 @@ public class Controller implements Initializable {
         } else {
             Components.simpleInfoBox("Info", "Tablename cannot be empty!");
         }
+
+        helpTextCreate.setText("");
+        createTable.setStyle("-fx-border-color: none");
+        tableName.textProperty().removeListener(tableChangeListener);
         checkTabStatus();
         refresh();
     }
 
-    public void refresh() {
+    private void refresh() {
         ObservableList<String> values = FXCollections.observableArrayList();
         values.clear();
 
         // Add values to OberservableList values
-        for (Table t : allTables) {
-            values.add(t.getName());
-        }
+        values.addAll(allTables.stream().map(Table::getName).collect(Collectors.toList()));
 
         // Set Value to ComboBox selectTable and selectTableDelete
         selectTable.setItems(values);
@@ -126,12 +183,12 @@ public class Controller implements Initializable {
             dataPane.getChildren().clear();
 
             // Create new TableView
-            TableView<String> table = new TableView<String>();
+            TableView<String> table = new TableView<>();
             table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 
             // For each Attribute add one Column with correct name
             for (Attribute a : t.getAttributes()) {
-                javafx.scene.control.TableColumn<String, String> col1 = new javafx.scene.control.TableColumn<String, String>(a.getName());
+                javafx.scene.control.TableColumn<String, String> col1 = new javafx.scene.control.TableColumn<>(a.getName());
                 col1.setPrefWidth(a.getName().length() * 15);
                 table.getColumns().add(col1);
             }
@@ -186,21 +243,22 @@ public class Controller implements Initializable {
 
     public void setTable() {
         // Get Value of selected Item
-        String curTbl = (String) selectTable.getValue();
+        String curTbl = selectTable.getValue();
 
         // If Value matches the Table's name --> Show it
-        for (Table t : allTables) {
-            if (t.getName().equals(curTbl)) {
-                showTable(t);
-                Logger.log(LogTags.INFO, "Controller.setTable(): Tabelle '" + t.getName() + "' angezeigt!");
-            }
-        }
+        allTables.stream().filter(t -> t.getName().equals(curTbl)).forEach(t -> {
+            showTable(t);
+            Logger.log(LogTags.INFO, "Controller.setTable(): Tabelle '" + t.getName() + "' angezeigt!");
+        });
         refresh();
     }
 
-    public void addAttribute(ActionEvent actionEvent) {
+    public void addAttribute() {
         String attrName;
         Datatype datatyp;
+
+        attributeName.textProperty().removeListener(attrChangeListener);
+        datatype.valueProperty().removeListener(datatypeChangeListener);
 
         // Validate the Textfield and ComboBox
         if (attributeName.getText() != null && !attributeName.getText().equals("")) {
@@ -220,16 +278,20 @@ public class Controller implements Initializable {
         }
 
         if (datatype.getValue() != null) {
-            String dtype = (String) datatype.getValue();
-            if (dtype.equals("Text")) {
-                datatyp = Datatype.TEXT;
-            } else if (dtype.equals("Decimal")) {
-                datatyp = Datatype.DECIMAL;
-            } else if (dtype.equals("Integer")) {
-                datatyp = Datatype.INTEGER;
-            } else {
-                Components.simpleInfoBox("Info", "Please choose a datatype!");
-                return;
+            String dtype = datatype.getValue();
+            switch (dtype) {
+                case "Text":
+                    datatyp = Datatype.TEXT;
+                    break;
+                case "Decimal":
+                    datatyp = Datatype.DECIMAL;
+                    break;
+                case "Integer":
+                    datatyp = Datatype.INTEGER;
+                    break;
+                default:
+                    Components.simpleInfoBox("Info", "Please choose a datatype!");
+                    return;
             }
         } else {
             Components.simpleInfoBox("Info", "Please choose a datatype!");
@@ -252,18 +314,18 @@ public class Controller implements Initializable {
         }
 
         // Get Value of selected Item
-        String curTbl = (String) selectTable.getValue();
+        String curTbl = selectTable.getValue();
 
         // Search correct Table in allTables
-        for (Table t : allTables) {
-            if (t.getName().equals(curTbl)) {
-                t.addAttribute(a);
-                Logger.log(LogTags.INFO, "Controller.addAttribute(): Der Tabelle '" + t.getName()
-                        + "' wurde das Attribut '" + a.getName() + "' hinzugefügt!");
-                showTable(t);
-            }
-        }
+        allTables.stream().filter(t -> t.getName().equals(curTbl)).forEach(t -> {
+            t.addAttribute(a);
+            Logger.log(LogTags.INFO, "Controller.addAttribute(): Der Tabelle '" + t.getName()
+                    + "' wurde das Attribut '" + a.getName() + "' hinzugefügt!");
+            showTable(t);
+        });
 
+        attributeName.setStyle("-fx-border-color: none");
+        addButton.setStyle("-fx-border-color: none");
         attributeName.setText("");
         isForeign.setSelected(false);
         isPrimary.setSelected(false);
@@ -275,25 +337,19 @@ public class Controller implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
-        isPrimary.selectedProperty().addListener(new ChangeListener<Boolean>() {
-            @Override
-            public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-                if (isPrimary.isSelected()) {
-                    isForeign.setDisable(true);
-                } else {
-                    isForeign.setDisable(false);
-                }
+        isPrimary.selectedProperty().addListener((observable, oldValue, newValue) -> {
+            if (isPrimary.isSelected()) {
+                isForeign.setDisable(true);
+            } else {
+                isForeign.setDisable(false);
             }
         });
 
-        isForeign.selectedProperty().addListener(new ChangeListener<Boolean>() {
-            @Override
-            public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-                if (isForeign.isSelected()) {
-                    isPrimary.setDisable(true);
-                } else {
-                    isPrimary.setDisable(false);
-                }
+        isForeign.selectedProperty().addListener((observable, oldValue, newValue) -> {
+            if (isForeign.isSelected()) {
+                isPrimary.setDisable(true);
+            } else {
+                isPrimary.setDisable(false);
             }
         });
 
@@ -308,20 +364,15 @@ public class Controller implements Initializable {
         checkTabStatus();
         refresh();
 
-        Platform.runLater(new Runnable() {
-            @Override
-            public void run() {
-                tableName.requestFocus();
-            }
-        });
+        Platform.runLater(() -> tableName.requestFocus());
     }
 
-    public void delete(ActionEvent actionEvent) {
+    public void delete() {
 
         if (ok("Warning", "Delete table '" + selectTableDelete.getValue() + "' ?")) {
 
             if (selectTableDelete.getValue() != null) {
-                String table = (String) selectTableDelete.getValue();
+                String table = selectTableDelete.getValue();
 
                 for (Iterator<Table> iterator = allTables.iterator(); iterator.hasNext(); ) {
                     Table t = iterator.next();
@@ -352,7 +403,7 @@ public class Controller implements Initializable {
         }
     }
 
-    public void deleteAll(ActionEvent actionEvent) {
+    public void deleteAll() {
         if (Components.ok("Warning", "Delete all tables?")) {
             allTables.clear();
             refresh();
@@ -365,7 +416,7 @@ public class Controller implements Initializable {
     @Nullable
     private Table selectedTable() {
 
-        String curT = (String) selectTable.getValue();
+        String curT = selectTable.getValue();
 
         for (Table t : allTables) {
             if (t.getName().equals(curT)) {
@@ -375,9 +426,9 @@ public class Controller implements Initializable {
         return null;
     }
 
-    public void deleteAttribute(ActionEvent actionEvent) {
+    public void deleteAttribute() {
         if (selectAttribute.getValue() != null) {
-            String attrToDel = (String) selectAttribute.getValue();
+            String attrToDel = selectAttribute.getValue();
 
             for (Iterator<Attribute> iterator = selectedTable().getAttributes().iterator(); iterator.hasNext(); ) {
                 Attribute a = iterator.next();
@@ -414,7 +465,9 @@ public class Controller implements Initializable {
         refresh();
     }
 
-    public void export(ActionEvent actionEvent) {
+    public void export() {
+        wayOfExport.valueProperty().removeListener(wayOfExportChangeListener);
+
         if (wayOfExport.getValue() == null) {
             Components.simpleInfoBox("Info", "Choose a way of exporting!");
             return;
@@ -425,7 +478,7 @@ public class Controller implements Initializable {
             return;
         }
 
-        String curTbl = (String) tableToExport.getValue();
+        String curTbl = tableToExport.getValue();
         Table tToExport = null;
 
         for (Table t : allTables) {
@@ -434,7 +487,7 @@ public class Controller implements Initializable {
             }
         }
 
-        String export = (String) wayOfExport.getValue();
+        String export = wayOfExport.getValue();
 
         switch (export) {
             case "HTML":
@@ -448,12 +501,15 @@ public class Controller implements Initializable {
                 break;
         }
 
+        wayOfExport.setStyle("-fx-border-color: none");
+        exportButton.setStyle("-fx-border-color: none");
+        exportHelpText.setText("");
         refresh();
     }
 
-    public void primarySelected(ActionEvent actionEvent) {
+    public void primarySelected() {
 
-        String curTbl = (String) selectTable.getValue();
+        String curTbl = selectTable.getValue();
 
         for (Table t : allTables) {
             if (t.getName().equals(curTbl)) {
@@ -470,8 +526,8 @@ public class Controller implements Initializable {
     }
 
 
-    public void foreignSelected(ActionEvent actionEvent) {
-        String curTbl = (String) selectTable.getValue();
+    public void foreignSelected() {
+        String curTbl = selectTable.getValue();
 
         for (Table t : allTables) {
             if (t.getName().equals(curTbl)) {
@@ -498,7 +554,7 @@ public class Controller implements Initializable {
         refresh();
     }
 
-    public void exportAll(ActionEvent actionEvent) {
+    public void exportAll() {
         if (wayOfExport.getValue() == null) {
             Components.simpleInfoBox("Info", "Choose a way of exporting!");
             return;
@@ -509,7 +565,7 @@ public class Controller implements Initializable {
             return;
         }
 
-        String export = (String) wayOfExport.getValue();
+        String export = wayOfExport.getValue();
 
         switch (export) {
             case "HTML":
@@ -523,10 +579,15 @@ public class Controller implements Initializable {
                 break;
         }
 
+        tableToExport.valueProperty().removeListener(exportTableChangListener);
+        wayOfExport.valueProperty().removeListener(wayOfExportChangeListener);
+        wayOfExport.setStyle("-fx-border-color: none");
+        exportButton.setStyle("-fx-border-color: none");
+        exportHelpText.setText("");
         refresh();
     }
 
-    public void deactivateTabs(Event event) {
+    public void deactivateTabs() {
         checkTabStatus();
     }
 
@@ -574,11 +635,11 @@ public class Controller implements Initializable {
         }
     }
 
-    public void newInsert(ActionEvent actionEvent) {
+    public void newInsert() {
         Components.simpleInfoBox("Info", "Not implemented yet!");
     }
 
-    public void showHelp(ActionEvent actionEvent) {
+    public void showHelp() {
         new Help();
     }
 
@@ -614,9 +675,7 @@ public class Controller implements Initializable {
 
             Button exitButton = new Button("Quit");
             exitButton.setPrefWidth(100);
-            exitButton.setOnAction(e -> {
-                window.close();
-            });
+            exitButton.setOnAction(e -> window.close());
 
             VBox layout = new VBox(15);
             layout.getChildren().addAll(l, createStage, modifyStage, exportTables, exitButton);
@@ -643,13 +702,40 @@ public class Controller implements Initializable {
     }
 
     private void showTipsCreateTable() {
-
+        SingleSelectionModel<Tab> tabModel = tabPane.getSelectionModel();
+        tabModel.select(0);
+        tableName.setStyle("-fx-border-color: red");
+        tableName.setPromptText("Enter table name here!");
+        tableName.textProperty().addListener(tableChangeListener);
     }
 
     private void showTipsModifyTable() {
+        if (allTables.size() != 0) {
+            SingleSelectionModel<Tab> tabModel = tabPane.getSelectionModel();
+            tabModel.select(1);
+            attributeName.setStyle("-fx-border-color: red");
+            attributeName.setPromptText("Enter attribute name here!");
+            attributeName.textProperty().addListener(attrChangeListener);
 
+            datatype.valueProperty().addListener(datatypeChangeListener);
+
+        } else {
+            if (ok("Info", "No tables yet. Start tutorial on how to create a table?")) {
+                showTipsCreateTable();
+            }
+        }
     }
 
     private void showTipsExportTable() {
+        if (allTables.size() != 0) {
+            SingleSelectionModel<Tab> tabModel = tabPane.getSelectionModel();
+            tabModel.select(3);
+            tableToExport.setStyle("-fx-border-color: red");
+            tableToExport.valueProperty().addListener(exportTableChangListener);
+        } else {
+            if (ok("Info", "No tables yet. Start tutorial on how to create a table?")) {
+                showTipsCreateTable();
+            }
+        }
     }
 }

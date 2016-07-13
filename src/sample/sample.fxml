@@ -17,7 +17,9 @@
     <items>
         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
             <children>
-                <TabPane prefHeight="145.0" prefWidth="748.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                <TabPane fx:id="tabPane" prefHeight="145.0" prefWidth="748.0" tabClosingPolicy="UNAVAILABLE"
+                         AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
+                         AnchorPane.topAnchor="0.0">
                     <tabs>
                         <Tab text="CREATE">
                             <content>
@@ -28,6 +30,7 @@
                                                 <TextField fx:id="tableName" prefHeight="31.0" prefWidth="235.0" promptText="Table" />
                                                 <Button fx:id="createTable" mnemonicParsing="false"
                                                         onAction="#createTable" prefWidth="70.0" text="Create"/>
+                                                <Label fx:id="helpTextCreate" text=""/>
                                             </children>
                                         </HBox>
                                     </children>
@@ -45,7 +48,8 @@
                                                 <ComboBox fx:id="datatype" prefHeight="31.0" prefWidth="160.0" promptText="Select Datatype" />
                                                 <CheckBox fx:id="isPrimary" mnemonicParsing="false" onAction="#primarySelected" text="Primary Key" />
                                                 <CheckBox fx:id="isForeign" mnemonicParsing="false" onAction="#foreignSelected" text="Foreign Key" />
-                                                <Button mnemonicParsing="false" onAction="#addAttribute" prefWidth="70.0" text="Add" />
+                                                <Button fx:id="addButton" mnemonicParsing="false"
+                                                        onAction="#addAttribute" prefWidth="70.0" text="Add"/>
                                             </children>
                                         </HBox>
                                     </children>
@@ -85,12 +89,14 @@
                                             <children>
                                                 <ComboBox fx:id="tableToExport" prefHeight="31.0" prefWidth="160.0" promptText="Select Table" />
                                                 <ComboBox fx:id="wayOfExport" prefHeight="31.0" prefWidth="160.0" promptText="Select Export" />
-                                                <Button mnemonicParsing="false" onAction="#export" prefWidth="70.0" text="Export">
+                                                <Button fx:id="exportButton" mnemonicParsing="false" onAction="#export"
+                                                        prefWidth="70.0" text="Export">
                                                     <HBox.margin>
                                                         <Insets />
                                                     </HBox.margin>
                                                 </Button>
                                                 <Button mnemonicParsing="false" onAction="#exportAll" text="Export All" />
+                                                <Label fx:id="exportHelpText"/>
                                             </children>
                                         </HBox>
                                     </children>
@@ -157,8 +163,8 @@
                                         <Label text="Menu:" />
                                         <ComboBox fx:id="selectTable" onAction="#setTable" prefWidth="150.0" promptText="Select Table" />
                                         <Label text="More features coming . . ." />
-                                        <Button mnemonicParsing="false" prefWidth="70.0" text="Help"
-                                                onAction="#showHelp"/>
+                                        <Button mnemonicParsing="false" onAction="#showHelp" prefWidth="70.0"
+                                                text="Help"/>
                                     </children>
                                     <padding>
                                         <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
