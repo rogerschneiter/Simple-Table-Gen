@@ -651,6 +651,5 @@ public class Controller implements Initializable {
     }
 
     private void showTipsExportTable() {
-
     }
 }
