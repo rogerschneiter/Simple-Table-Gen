@@ -145,6 +145,13 @@ public class Controller implements Initializable {
         }
     };
 
+    private ChangeListener changeTabWhileHelpListener = new ChangeListener() {
+        @Override
+        public void changed(ObservableValue observable, Object oldValue, Object newValue) {
+            Logger.log(LogTags.COMMENT, "!TAB CHANGED!");
+        }
+    };
+
     public void createTable() {
         // If Text is not empty, then:
         if (tableName.getText() != null && !tableName.getText().equals("")) {
@@ -177,6 +184,7 @@ public class Controller implements Initializable {
             Components.simpleInfoBox("Info", "Tablename cannot be empty!");
         }
 
+        tabPane.getSelectionModel().selectedItemProperty().removeListener(changeTabWhileHelpListener);
         helpTextCreate.setText("");
         createTable.setStyle("-fx-border-color: none");
         tableName.textProperty().removeListener(tableChangeListener);
@@ -357,6 +365,7 @@ public class Controller implements Initializable {
             showTable(t);
         });
 
+        tabPane.getSelectionModel().selectedItemProperty().removeListener(changeTabWhileHelpListener);
         attributeName.setStyle("-fx-border-color: none");
         addButton.setStyle("-fx-border-color: none");
         attributeName.setText("");
@@ -501,6 +510,7 @@ public class Controller implements Initializable {
                 break;
         }
 
+        tabPane.getSelectionModel().selectedItemProperty().removeListener(changeTabWhileHelpListener);
         wayOfExport.setStyle("-fx-border-color: none");
         exportButton.setStyle("-fx-border-color: none");
         exportHelpText.setText("");
@@ -579,6 +589,7 @@ public class Controller implements Initializable {
                 break;
         }
 
+        tabPane.getSelectionModel().selectedItemProperty().removeListener(changeTabWhileHelpListener);
         tableToExport.valueProperty().removeListener(exportTableChangListener);
         wayOfExport.valueProperty().removeListener(wayOfExportChangeListener);
         wayOfExport.setStyle("-fx-border-color: none");
@@ -707,6 +718,8 @@ public class Controller implements Initializable {
         tableName.setStyle("-fx-border-color: red");
         tableName.setPromptText("Enter table name here!");
         tableName.textProperty().addListener(tableChangeListener);
+
+        tabPane.getSelectionModel().selectedItemProperty().addListener(changeTabWhileHelpListener);
     }
 
     private void showTipsModifyTable() {
@@ -718,6 +731,7 @@ public class Controller implements Initializable {
             attributeName.textProperty().addListener(attrChangeListener);
 
             datatype.valueProperty().addListener(datatypeChangeListener);
+            tabPane.getSelectionModel().selectedItemProperty().addListener(changeTabWhileHelpListener);
 
         } else {
             if (ok("Info", "No tables yet. Start tutorial on how to create a table?")) {
@@ -732,6 +746,7 @@ public class Controller implements Initializable {
             tabModel.select(3);
             tableToExport.setStyle("-fx-border-color: red");
             tableToExport.valueProperty().addListener(exportTableChangListener);
+            tabPane.getSelectionModel().selectedItemProperty().addListener(changeTabWhileHelpListener);
         } else {
             if (ok("Info", "No tables yet. Start tutorial on how to create a table?")) {
                 showTipsCreateTable();
