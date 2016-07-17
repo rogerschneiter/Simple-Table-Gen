@@ -70,16 +70,20 @@ public class Controller implements Initializable {
         isPrimary.selectedProperty().addListener((observable, oldValue, newValue) -> {
             if (isPrimary.isSelected()) {
                 isForeign.setDisable(true);
+                datatype.setDisable(true);
             } else {
                 isForeign.setDisable(false);
+                datatype.setDisable(false);
             }
         });
 
         isForeign.selectedProperty().addListener((observable, oldValue, newValue) -> {
             if (isForeign.isSelected()) {
                 isPrimary.setDisable(true);
+                datatype.setDisable(true);
             } else {
                 isPrimary.setDisable(false);
+                datatype.setDisable(false);
             }
         });
 
