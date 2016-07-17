@@ -6,16 +6,18 @@ public class Attribute {
     private Datatype datatyp;
     private Boolean isPrimaryKey;
     private Boolean isForeignKey;
+    private Boolean isNotNull;
 
     // Foreign Key Values
     private Table refTable;
     private Attribute refAttribute;
 
-    public Attribute(String name, Datatype datatyp, boolean isPrimaryKey, boolean isForeignKey) {
+    public Attribute(String name, Datatype datatyp, boolean isPrimaryKey, boolean isForeignKey, boolean isNotNull) {
         this.name = name;
         this.datatyp = datatyp;
         this.isPrimaryKey = isPrimaryKey;
         this.isForeignKey = isForeignKey;
+        this.isNotNull = isNotNull;
     }
 
     public String getName() {
@@ -32,6 +34,10 @@ public class Attribute {
 
     public Boolean isForeignKey() {
         return isForeignKey;
+    }
+
+    public Boolean isNotNull() {
+        return isNotNull;
     }
 
     public Attribute getRefAttribute() {

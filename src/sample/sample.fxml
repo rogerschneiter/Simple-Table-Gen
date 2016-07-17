@@ -42,8 +42,9 @@
                                             <children>
                                                 <TextField fx:id="attributeName" prefHeight="31.0" prefWidth="235.0" promptText="Attribute" />
                                                 <ComboBox fx:id="datatype" prefHeight="31.0" prefWidth="160.0" promptText="Select Datatype" />
-                                                <CheckBox fx:id="isPrimary" mnemonicParsing="false" onAction="#primarySelected" text="Primary Key" />
-                                                <CheckBox fx:id="isForeign" mnemonicParsing="false" onAction="#foreignSelected" text="Foreign Key" />
+                                                <CheckBox fx:id="isPrimary" mnemonicParsing="false" onAction="#primarySelected" text="PK" />
+                                                <CheckBox fx:id="isForeign" mnemonicParsing="false" onAction="#foreignSelected" text="FK" />
+                                    <CheckBox mnemonicParsing="false" text="Not Null" fx:id="notNull"/>
                                                 <Button fx:id="addButton" mnemonicParsing="false" onAction="#addAttribute" prefWidth="70.0" text="Add" />
                                             </children>
                                         </HBox>

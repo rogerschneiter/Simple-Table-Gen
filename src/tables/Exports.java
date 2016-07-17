@@ -69,7 +69,11 @@ public class Exports {
 
         for (Attribute a : t.getAttributes()) {
             if (!a.isPrimaryKey()) {
-                sqliteContent += "\t" + a.getName() + " " + a.getDatatypSqlite() + ",\n";
+                if (a.isNotNull()) {
+                    sqliteContent += "\t" + a.getName() + " " + a.getDatatypSqlite() + " NOT NULL,\n";
+                } else {
+                    sqliteContent += "\t" + a.getName() + " " + a.getDatatypSqlite() + ",\n";
+                }
             }
         }
 
@@ -102,7 +106,11 @@ public class Exports {
 
                 for (Attribute a : t.getAttributes()) {
                     if (!a.isPrimaryKey()) {
-                        sqliteContent += "\t" + a.getName() + " " + a.getDatatypSqlite() + ",\n";
+                        if (a.isNotNull()) {
+                            sqliteContent += "\t" + a.getName() + " " + a.getDatatypSqlite() + " NOT NULL,\n";
+                        } else {
+                            sqliteContent += "\t" + a.getName() + " " + a.getDatatypSqlite() + ",\n";
+                        }
                     }
                 }
 
@@ -114,7 +122,6 @@ public class Exports {
         }
 
         for (Table t : allTables) {
-
             if (t.hasForeign()) {
                 sqliteContent += "CREATE TABLE IF NOT EXISTS " + t.getName() + " ( \n";
 
@@ -127,9 +134,15 @@ public class Exports {
                 }
 
                 for (Attribute a : t.getAttributes()) {
-                    if (!a.isPrimaryKey()) {
-                        if (a.isForeignKey()) {
+                    if (a.isForeignKey()) {
+                        if (a.isNotNull()) {
+                            sqliteContent += "\t" + a.getName() + " INTEGER NOT NULL,\n";
+                        } else {
                             sqliteContent += "\t" + a.getName() + " INTEGER,\n";
+                        }
+                    } else {
+                        if (a.isNotNull()) {
+                            sqliteContent += "\t" + a.getName() + " " + a.getDatatypSqlite() + " NOT NULL,\n";
                         } else {
                             sqliteContent += "\t" + a.getName() + " " + a.getDatatypSqlite() + ",\n";
                         }
@@ -139,7 +152,7 @@ public class Exports {
                 for (Attribute a : t.getAttributes()) {
                     if (a.isForeignKey()) {
                         sqliteContent += "\t" + "FOREIGN KEY(" + a.getName() + ") REFERENCES "
-                                +a.getRefTable().getName()+"("+a.getRefAttribute().getName()+"),\n";
+                                + a.getRefTable().getName() + "(" + a.getRefAttribute().getName() + "),\n";
                     }
                 }
 
@@ -170,7 +183,11 @@ public class Exports {
 
         for (Attribute a : t.getAttributes()) {
             if (!a.isPrimaryKey()) {
-                mysqlContent += "\t" + a.getName() + " " + a.getDatatypMySQL() + ",\n";
+                if (a.isNotNull()) {
+                    mysqlContent += "\t" + a.getName() + " " + a.getDatatypMySQL() + " NOT NULL,\n";
+                } else {
+                    mysqlContent += "\t" + a.getName() + " " + a.getDatatypMySQL() + ",\n";
+                }
             }
         }
 
@@ -211,7 +228,9 @@ public class Exports {
                 }
 
                 for (Attribute a : t.getAttributes()) {
-                    if (!a.isPrimaryKey()) {
+                    if (a.isNotNull()) {
+                        mysqlContent += "\t" + a.getName() + " " + a.getDatatypMySQL() + " NOT NULL,\n";
+                    } else {
                         mysqlContent += "\t" + a.getName() + " " + a.getDatatypMySQL() + ",\n";
                     }
                 }
@@ -239,9 +258,17 @@ public class Exports {
                 for (Attribute a : t.getAttributes()) {
                     if (!a.isPrimaryKey()) {
                         if (a.isForeignKey()) {
-                            mysqlContent += "\t" + a.getName() + " INT,\n";
+                            if (a.isNotNull()) {
+                                mysqlContent += "\t" + a.getName() + " INT NOT NULL,\n";
+                            } else {
+                                mysqlContent += "\t" + a.getName() + " INT,\n";
+                            }
                         } else {
-                            mysqlContent += "\t" + a.getName() + " " + a.getDatatypMySQL() + ",\n";
+                            if (a.isNotNull()) {
+                                mysqlContent += "\t" + a.getName() + " " + a.getDatatypMySQL() + " NOT NULL,\n";
+                            } else {
+                                mysqlContent += "\t" + a.getName() + " " + a.getDatatypMySQL() + ",\n";
+                            }
                         }
                     }
                 }
@@ -249,7 +276,7 @@ public class Exports {
                 for (Attribute a : t.getAttributes()) {
                     if (a.isForeignKey()) {
                         mysqlContent += "\t" + "FOREIGN KEY(" + a.getName() + ") REFERENCES "
-                                +a.getRefTable().getName()+"("+a.getRefAttribute().getName()+"),\n";
+                                + a.getRefTable().getName() + "(" + a.getRefAttribute().getName() + "),\n";
                     }
                 }
 

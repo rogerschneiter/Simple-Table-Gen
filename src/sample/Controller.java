@@ -61,6 +61,7 @@ public class Controller implements Initializable {
     public Button addButton;
     public Button exportButton;
     public Label exportHelpText;
+    public CheckBox notNull;
     private ArrayList<Table> allTables = new ArrayList<>();
 
     @Override
@@ -69,9 +70,11 @@ public class Controller implements Initializable {
         isPrimary.selectedProperty().addListener((observable, oldValue, newValue) -> {
             if (isPrimary.isSelected()) {
                 isForeign.setDisable(true);
+                notNull.setDisable(true);
                 datatype.setDisable(true);
             } else {
                 isForeign.setDisable(false);
+                notNull.setDisable(false);
                 datatype.setDisable(false);
             }
         });
@@ -227,7 +230,7 @@ public class Controller implements Initializable {
 
         // Add values to OberservableList values
         values.addAll(allTables.stream().map(Table::getName).collect(Collectors.toList()));
-        values.add("Export all");
+        values.add("Export All");
 
         // Set Value to ComboBox selectTable and selectTableDelete
         selectTable.setItems(values);
@@ -274,7 +277,11 @@ public class Controller implements Initializable {
             if (a.isPrimaryKey()) {
                 entry += " (Primary Key)";
             } else if (a.isForeignKey()) {
-                entry += " (Foreign Key)";
+                if (a.isNotNull()) {
+                    entry += " (Foreign Key, Not Null)";
+                } else {
+                    entry += " (Foreign Key, Not Null)";
+                }
             }
             datatypeValues.add(entry);
         }
@@ -364,7 +371,7 @@ public class Controller implements Initializable {
         }
 
         // Create Attribute
-        Attribute a = new Attribute(attrName, datatyp, isPrimary.isSelected(), isForeign.isSelected());
+        Attribute a = new Attribute(attrName, datatyp, isPrimary.isSelected(), isForeign.isSelected(), notNull.isSelected());
 
         // Set Foreignkey reference Values
         if (a.isForeignKey()) {
@@ -395,6 +402,7 @@ public class Controller implements Initializable {
         attributeName.setText("");
         isForeign.setSelected(false);
         isPrimary.setSelected(false);
+        notNull.setSelected(false);
         isForeign.setDisable(false);
         isPrimary.setDisable(false);
         refresh();
@@ -523,6 +531,10 @@ public class Controller implements Initializable {
             if (t.getName().equals(curTbl)) {
                 tToExport = t;
             }
+        }
+
+        if (tToExport == null) {
+            return;
         }
 
         String export = wayOfExport.getValue();
