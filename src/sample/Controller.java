@@ -20,7 +20,6 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-import org.jetbrains.annotations.Nullable;
 import tables.Attribute;
 import tables.Datatype;
 import tables.Exports;
@@ -101,7 +100,7 @@ public class Controller implements Initializable {
         Platform.runLater(() -> tableName.requestFocus());
     }
 
-    private ChangeListener tableChangeListener = new ChangeListener() {
+    private ChangeListener<? super String> tableChangeListener = new ChangeListener() {
         @Override
         public void changed(ObservableValue observable, Object oldValue, Object newValue) {
             if (newValue != null && !newValue.equals("")) {
@@ -113,7 +112,7 @@ public class Controller implements Initializable {
         }
     };
 
-    private ChangeListener datatypeChangeListener = new ChangeListener() {
+    private ChangeListener<? super String> datatypeChangeListener = new ChangeListener() {
         @Override
         public void changed(ObservableValue observable, Object oldValue, Object newValue) {
             datatype.setStyle("-fx-border-color: none");
@@ -121,7 +120,7 @@ public class Controller implements Initializable {
         }
     };
 
-    private ChangeListener attrChangeListener = new ChangeListener() {
+    private ChangeListener<? super String> attrChangeListener = new ChangeListener() {
         @Override
         public void changed(ObservableValue observable, Object oldValue, Object newValue) {
             attributeName.setPromptText("Attribute");
@@ -130,7 +129,7 @@ public class Controller implements Initializable {
         }
     };
 
-    private ChangeListener wayOfExportChangeListener = new ChangeListener() {
+    private ChangeListener<? super String> wayOfExportChangeListener = new ChangeListener() {
         @Override
         public void changed(ObservableValue observable, Object oldValue, Object newValue) {
             tableToExport.valueProperty().removeListener(exportTableChangListener);
@@ -140,7 +139,7 @@ public class Controller implements Initializable {
         }
     };
 
-    private ChangeListener exportTableChangListener = new ChangeListener() {
+    private ChangeListener<? super String> exportTableChangListener = new ChangeListener() {
         @Override
         public void changed(ObservableValue observable, Object oldValue, Object newValue) {
             tableToExport.setStyle("-fx-border-color: none");
@@ -149,7 +148,7 @@ public class Controller implements Initializable {
         }
     };
 
-    private ChangeListener changeTabWhileHelpListener = new ChangeListener() {
+    private ChangeListener<? super Tab> changeTabWhileHelpListener = new ChangeListener() {
         @Override
         public void changed(ObservableValue observable, Object oldValue, Object newValue) {
             killHelp();
@@ -237,17 +236,14 @@ public class Controller implements Initializable {
         values2.clear();
 
         if (selectedTable() != null) {
-
-            for (Attribute a : selectedTable().getAttributes()) {
-                values2.add(a.getName());
-            }
-
-            selectAttribute.setItems(values2);
+            values2.addAll(selectedTable().getAttributes().stream().map(Attribute::getName).collect(Collectors.toList()));
         }
+
+        selectAttribute.setItems(values2);
     }
 
     private void showTable(Table t) {
-        if (t != null) {
+        {
             // clear tablePane
             dataPane.getChildren().clear();
 
@@ -267,10 +263,7 @@ public class Controller implements Initializable {
             refresh();
         }
 
-        ArrayList<String> attributeValues = new ArrayList<>();
-        for (Attribute a : t.getAttributes()) {
-            attributeValues.add(a.getName());
-        }
+        ArrayList<String> attributeValues = t.getAttributes().stream().map(Attribute::getName).collect(Collectors.toCollection(ArrayList::new));
 
         ArrayList<String> datatypeValues = new ArrayList<>();
         for (Attribute a : t.getAttributes()) {
@@ -450,17 +443,17 @@ public class Controller implements Initializable {
         checkTabStatus();
     }
 
-    @Nullable
     private Table selectedTable() {
 
+        Table tbl = null;
         String curT = selectTable.getValue();
 
         for (Table t : allTables) {
             if (t.getName().equals(curT)) {
-                return t;
+                tbl = t;
             }
         }
-        return null;
+        return tbl;
     }
 
     public void deleteAttribute() {
