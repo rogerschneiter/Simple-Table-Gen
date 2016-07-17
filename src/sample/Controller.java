@@ -230,12 +230,18 @@ public class Controller implements Initializable {
 
         // Add values to OberservableList values
         values.addAll(allTables.stream().map(Table::getName).collect(Collectors.toList()));
-        values.add("Export All");
 
         // Set Value to ComboBox selectTable and selectTableDelete
         selectTable.setItems(values);
         selectTableDelete.setItems(values);
-        tableToExport.setItems(values);
+
+        ObservableList<String> expValues = FXCollections.observableArrayList();
+        expValues.clear();
+
+        // Add values to OberservableList values
+        expValues.addAll(allTables.stream().map(Table::getName).collect(Collectors.toList()));
+        expValues.add("Export All");
+        tableToExport.setItems(expValues);
 
         // Add values to second Obs List
         ObservableList<String> values2 = FXCollections.observableArrayList();

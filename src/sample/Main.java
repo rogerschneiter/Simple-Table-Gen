@@ -15,6 +15,7 @@ public class Main extends Application {
         Image icon = new Image(getClass().getResourceAsStream("\\res\\icon.png"));
         primaryStage.getIcons().addAll(icon);
         primaryStage.setTitle("Simple Table Generator V 1.1");
+        primaryStage.resizableProperty().setValue(Boolean.FALSE);
         Scene s = new Scene(root, 750, 500);
         s.getStylesheets().add(getClass().getResource("\\res\\style.css").toExternalForm());
 
