@@ -13,13 +13,11 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<SplitPane dividerPositions="0.3" maxHeight="500.0" maxWidth="750.0" minHeight="500.0" minWidth="750.0" orientation="VERTICAL" prefHeight="500.0" prefWidth="750.0" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.Controller">
+<SplitPane dividerPositions="0.3" maxHeight="500.0" maxWidth="750.0" minHeight="500.0" minWidth="750.0" orientation="VERTICAL" prefHeight="500.0" prefWidth="750.0" xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.Controller">
     <items>
         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
             <children>
-                <TabPane fx:id="tabPane" prefHeight="145.0" prefWidth="748.0" tabClosingPolicy="UNAVAILABLE"
-                         AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
-                         AnchorPane.topAnchor="0.0">
+                <TabPane fx:id="tabPane" prefHeight="145.0" prefWidth="748.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                     <tabs>
                         <Tab text="CREATE">
                             <content>
@@ -28,9 +26,8 @@
                                         <HBox alignment="CENTER_LEFT" layoutX="10.0" layoutY="10.0" prefHeight="111.0" prefWidth="748.0" spacing="10.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
                                             <children>
                                                 <TextField fx:id="tableName" prefHeight="31.0" prefWidth="235.0" promptText="Table" />
-                                                <Button fx:id="createTable" mnemonicParsing="false"
-                                                        onAction="#createTable" prefWidth="70.0" text="Create"/>
-                                                <Label fx:id="helpTextCreate" text=""/>
+                                                <Button fx:id="createTable" mnemonicParsing="false" onAction="#createTable" prefWidth="70.0" text="Create" />
+                                                <Label fx:id="helpTextCreate" text="" />
                                             </children>
                                         </HBox>
                                     </children>
@@ -39,8 +36,7 @@
                         </Tab>
                         <Tab onSelectionChanged="#deactivateTabs" text="ALTER">
                             <content>
-                                <AnchorPane fx:id="tabAlter" minHeight="0.0" minWidth="0.0" prefHeight="180.0"
-                                            prefWidth="200.0">
+                                <AnchorPane fx:id="tabAlter" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                     <children>
                                         <HBox alignment="CENTER_LEFT" prefHeight="111.0" prefWidth="748.0" spacing="10.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
                                             <children>
@@ -48,8 +44,7 @@
                                                 <ComboBox fx:id="datatype" prefHeight="31.0" prefWidth="160.0" promptText="Select Datatype" />
                                                 <CheckBox fx:id="isPrimary" mnemonicParsing="false" onAction="#primarySelected" text="Primary Key" />
                                                 <CheckBox fx:id="isForeign" mnemonicParsing="false" onAction="#foreignSelected" text="Foreign Key" />
-                                                <Button fx:id="addButton" mnemonicParsing="false"
-                                                        onAction="#addAttribute" prefWidth="70.0" text="Add"/>
+                                                <Button fx:id="addButton" mnemonicParsing="false" onAction="#addAttribute" prefWidth="70.0" text="Add" />
                                             </children>
                                         </HBox>
                                     </children>
@@ -58,14 +53,12 @@
                         </Tab>
                         <Tab onSelectionChanged="#deactivateTabs" text="DELETE">
                             <content>
-                                <AnchorPane fx:id="tabDel" minHeight="0.0" minWidth="0.0" prefHeight="180.0"
-                                            prefWidth="200.0">
+                                <AnchorPane fx:id="tabDel" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                     <children>
                                         <HBox alignment="CENTER_LEFT" prefHeight="111.0" prefWidth="748.0" spacing="10.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
                                             <children>
                                                 <ComboBox fx:id="selectAttribute" prefHeight="31.0" prefWidth="160.0" promptText="Select Attribute" />
-                                                <Button fx:id="deleteAttribute" mnemonicParsing="false"
-                                                        onAction="#deleteAttribute" prefWidth="70.0" text="Delete"/>
+                                                <Button fx:id="deleteAttribute" mnemonicParsing="false" onAction="#deleteAttribute" prefWidth="70.0" text="Delete" />
                                                 <Label text="Delete Whole Table:" />
                                                 <ComboBox fx:id="selectTableDelete" prefHeight="31.0" prefWidth="160.0" promptText="Select Table" />
                                                 <Button mnemonicParsing="false" onAction="#delete" prefWidth="70.0" text="Delete">
@@ -82,21 +75,18 @@
                         </Tab>
                         <Tab onSelectionChanged="#deactivateTabs" text="EXPORT">
                             <content>
-                                <AnchorPane fx:id="tabExport" minHeight="0.0" minWidth="0.0" prefHeight="180.0"
-                                            prefWidth="200.0">
+                                <AnchorPane fx:id="tabExport" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                     <children>
                                         <HBox alignment="CENTER_LEFT" prefHeight="111.0" prefWidth="748.0" spacing="10.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
                                             <children>
                                                 <ComboBox fx:id="tableToExport" prefHeight="31.0" prefWidth="160.0" promptText="Select Table" />
                                                 <ComboBox fx:id="wayOfExport" prefHeight="31.0" prefWidth="160.0" promptText="Select Export" />
-                                                <Button fx:id="exportButton" mnemonicParsing="false" onAction="#export"
-                                                        prefWidth="70.0" text="Export">
+                                                <Button fx:id="exportButton" mnemonicParsing="false" onAction="#export" prefWidth="70.0" text="Export">
                                                     <HBox.margin>
                                                         <Insets />
                                                     </HBox.margin>
                                                 </Button>
-                                                <Button mnemonicParsing="false" onAction="#exportAll" text="Export All" />
-                                                <Label fx:id="exportHelpText"/>
+                                                <Label fx:id="exportHelpText" />
                                             </children>
                                         </HBox>
                                     </children>
@@ -105,17 +95,12 @@
                         </Tab>
                         <Tab onSelectionChanged="#deactivateTabs" text="INSERT">
                             <content>
-                                <AnchorPane fx:id="tabInsert" minHeight="0.0" minWidth="0.0" prefHeight="180.0"
-                                            prefWidth="200.0">
+                                <AnchorPane fx:id="tabInsert" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                     <children>
-                                        <HBox alignment="CENTER_LEFT" layoutX="10.0" layoutY="10.0" prefHeight="111.0"
-                                              prefWidth="748.0" spacing="10.0" AnchorPane.bottomAnchor="10.0"
-                                              AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0"
-                                              AnchorPane.topAnchor="10.0">
+                                        <HBox alignment="CENTER_LEFT" layoutX="10.0" layoutY="10.0" prefHeight="111.0" prefWidth="748.0" spacing="10.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
                                             <children>
-                                                <Button fx:id="newInsert" mnemonicParsing="false" onAction="#newInsert"
-                                                        text="New Insert"/>
-                                                <Label text="Currently only works for tables without foreign keys!"/>
+                                                <Button fx:id="newInsert" mnemonicParsing="false" onAction="#newInsert" text="New Insert" />
+                                                <Label text="Currently only works for tables without foreign keys!" />
                                             </children>
                                         </HBox>
                                     </children>
@@ -146,9 +131,7 @@
                               <content>
                                   <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                       <children>
-                                          <VBox fx:id="dataPane" prefHeight="304.0" prefWidth="518.0"
-                                                AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
-                                                AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0"/>
+                                          <VBox fx:id="dataPane" prefHeight="304.0" prefWidth="518.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                                       </children>
                                   </AnchorPane>
                               </content>
@@ -163,8 +146,7 @@
                                         <Label text="Menu:" />
                                         <ComboBox fx:id="selectTable" onAction="#setTable" prefWidth="150.0" promptText="Select Table" />
                                         <Label text="More features coming . . ." />
-                                        <Button mnemonicParsing="false" onAction="#showHelp" prefWidth="70.0"
-                                                text="Help"/>
+                                        <Button mnemonicParsing="false" onAction="#showHelp" prefWidth="70.0" text="Help" />
                                     </children>
                                     <padding>
                                         <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />

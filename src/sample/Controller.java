@@ -94,6 +94,8 @@ public class Controller implements Initializable {
         values3.addAll("HTML", "SQLite", "MySQL");
         wayOfExport.setItems(values3);
 
+        tableToExport.setValue("Export All");
+
         checkTabStatus();
         refresh();
 
@@ -225,6 +227,7 @@ public class Controller implements Initializable {
 
         // Add values to OberservableList values
         values.addAll(allTables.stream().map(Table::getName).collect(Collectors.toList()));
+        values.add("Export all");
 
         // Set Value to ComboBox selectTable and selectTableDelete
         selectTable.setItems(values);
@@ -505,6 +508,11 @@ public class Controller implements Initializable {
 
         if (tableToExport.getValue() == null) {
             Components.simpleInfoBox("Info", "Choose a table to export!");
+            return;
+        }
+
+        if (tableToExport.getValue().equals("Export All")) {
+            exportAll();
             return;
         }
 
