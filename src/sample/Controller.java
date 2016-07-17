@@ -592,7 +592,7 @@ public class Controller implements Initializable {
         refresh();
     }
 
-    public void exportAll() {
+    private void exportAll() {
         if (wayOfExport.getValue() == null) {
             Components.simpleInfoBox("Info", "Choose a way of exporting!");
             return;
