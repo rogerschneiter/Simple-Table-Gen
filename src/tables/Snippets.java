@@ -3,9 +3,9 @@ package tables;
 public class Snippets {
 
     // Script texts
-    public static String HTMLMESSAGE = "<!--Auto-Generated HTML-Code by Simple Table Generator V 0.1-->\n";
-    public static String SQLITEMESSAGE = "--Auto-Generated SQLite-Script by Simple Table Generator V 0.1\n";
-    public static String MYSQLMESSAGE = "--Auto-Generated MySQL-Script by Simple Table Generator V 0.1\n";
+    public static String HTMLMESSAGE = "<!--Auto-Generated HTML-Code by Simple Table Generator V 0.1-->\n\n";
+    public static String SQLITEMESSAGE = "--Auto-Generated SQLite-Script by Simple Table Generator V 0.1\n\n";
+    public static String MYSQLMESSAGE = "--Auto-Generated MySQL-Script by Simple Table Generator V 0.1\n\n";
 
     // Standard HTML structure
     public static String HTMLBASE = " <!DOCTYPE html>\n" +

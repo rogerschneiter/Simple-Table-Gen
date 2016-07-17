@@ -57,7 +57,7 @@ public class Exports {
         Logger.log(LogTags.INFO, "Exports.toSQLite(): Generating SQLite-Script...");
 
         sqliteContent += SQLITEMESSAGE;
-        sqliteContent += "CREATE TABLE IF NOT EXISTS " + t.getName() + " (\n";
+        sqliteContent += "CREATE TABLE IF NOT EXISTS " + t.getName() + " ( \n";
 
         if (t.hasPrimary()) {
             for (Attribute a : t.getAttributes()) {
@@ -84,13 +84,13 @@ public class Exports {
         String sqliteContent = "";
         Logger.log(LogTags.INFO, "Exports.toSQLite(): Generating SQLite-Script...");
 
-        sqliteContent += SQLITEMESSAGE + "\n";
+        sqliteContent += SQLITEMESSAGE;
 
         for (Table t : allTables) {
 
             if (!t.hasForeign()) {
 
-                sqliteContent += "CREATE TABLE IF NOT EXISTS " + t.getName() + " (\n";
+                sqliteContent += "CREATE TABLE IF NOT EXISTS " + t.getName() + " ( \n";
 
                 if (t.hasPrimary()) {
                     for (Attribute a : t.getAttributes()) {
@@ -116,7 +116,7 @@ public class Exports {
         for (Table t : allTables) {
 
             if (t.hasForeign()) {
-                sqliteContent += "CREATE TABLE IF NOT EXISTS " + t.getName() + " (\n";
+                sqliteContent += "CREATE TABLE IF NOT EXISTS " + t.getName() + " ( \n";
 
                 if (t.hasPrimary()) {
                     for (Attribute a : t.getAttributes()) {
@@ -158,7 +158,7 @@ public class Exports {
         Logger.log(LogTags.INFO, "Exports.toMySQL(): Generating MySQL-Script...");
 
         mysqlContent += MYSQLMESSAGE;
-        mysqlContent += "CREATE TABLE IF NOT EXISTS " + t.getName() + " (\n";
+        mysqlContent += "CREATE TABLE IF NOT EXISTS " + t.getName() + " ( \n";
 
         if (t.hasPrimary()) {
             for (Attribute a : t.getAttributes()) {
@@ -194,13 +194,13 @@ public class Exports {
         String mysqlContent = "";
         Logger.log(LogTags.INFO, "Exports.toMySQL(): Generating MySQL-Script...");
 
-        mysqlContent += MYSQLMESSAGE + "\n";
+        mysqlContent += MYSQLMESSAGE;
 
         for (Table t : allTables) {
 
             if (!t.hasForeign()) {
 
-                mysqlContent += "CREATE TABLE IF NOT EXISTS " + t.getName() + " (\n";
+                mysqlContent += "CREATE TABLE IF NOT EXISTS " + t.getName() + " ( \n";
 
                 if (t.hasPrimary()) {
                     for (Attribute a : t.getAttributes()) {
@@ -226,7 +226,7 @@ public class Exports {
         for (Table t : allTables) {
 
             if (t.hasForeign()) {
-                mysqlContent += "CREATE TABLE IF NOT EXISTS " + t.getName() + " (\n";
+                mysqlContent += "CREATE TABLE IF NOT EXISTS " + t.getName() + " ( \n";
 
                 if (t.hasPrimary()) {
                     for (Attribute a : t.getAttributes()) {

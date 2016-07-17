@@ -14,7 +14,7 @@ public class Main extends Application {
         Parent root = FXMLLoader.load(getClass().getResource("sample.fxml"));
         Image icon = new Image(getClass().getResourceAsStream("\\res\\icon.png"));
         primaryStage.getIcons().addAll(icon);
-        primaryStage.setTitle("Simple Table Gen V 0.1");
+        primaryStage.setTitle("Simple Table Generator V 1.1");
         Scene s = new Scene(root, 750, 500);
         s.getStylesheets().add(getClass().getResource("\\res\\style.css").toExternalForm());
 

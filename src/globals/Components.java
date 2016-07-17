@@ -69,9 +69,11 @@ public class Components {
 
         ComboBox<String> cb = new ComboBox<>();
         cb.setPromptText("Select Table");
+        cb.setPrefWidth(150);
 
         ComboBox<String> cb1 = new ComboBox<>();
         cb1.setPromptText("Select Attribute");
+        cb1.setPrefWidth(150);
 
         ObservableList<String> values = FXCollections.observableArrayList();
         for (Table t : allTables)  {
