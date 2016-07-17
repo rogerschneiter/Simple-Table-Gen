@@ -134,17 +134,19 @@ public class Exports {
                 }
 
                 for (Attribute a : t.getAttributes()) {
-                    if (a.isForeignKey()) {
-                        if (a.isNotNull()) {
-                            sqliteContent += "\t" + a.getName() + " INTEGER NOT NULL,\n";
+                    if (!a.isPrimaryKey()) {
+                        if (a.isForeignKey()) {
+                            if (a.isNotNull()) {
+                                sqliteContent += "\t" + a.getName() + " INTEGER NOT NULL,\n";
+                            } else {
+                                sqliteContent += "\t" + a.getName() + " INTEGER,\n";
+                            }
                         } else {
-                            sqliteContent += "\t" + a.getName() + " INTEGER,\n";
-                        }
-                    } else {
-                        if (a.isNotNull()) {
-                            sqliteContent += "\t" + a.getName() + " " + a.getDatatypSqlite() + " NOT NULL,\n";
-                        } else {
-                            sqliteContent += "\t" + a.getName() + " " + a.getDatatypSqlite() + ",\n";
+                            if (a.isNotNull()) {
+                                sqliteContent += "\t" + a.getName() + " " + a.getDatatypSqlite() + " NOT NULL,\n";
+                            } else {
+                                sqliteContent += "\t" + a.getName() + " " + a.getDatatypSqlite() + ",\n";
+                            }
                         }
                     }
                 }
