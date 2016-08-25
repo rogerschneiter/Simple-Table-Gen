@@ -13,7 +13,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<SplitPane dividerPositions="0.3" maxHeight="500.0" maxWidth="750.0" minHeight="500.0" minWidth="750.0" orientation="VERTICAL" prefHeight="500.0" prefWidth="750.0" xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.Controller">
+<SplitPane dividerPositions="0.3" maxHeight="500.0" maxWidth="750.0" minHeight="500.0" minWidth="750.0" orientation="VERTICAL" prefHeight="500.0" prefWidth="750.0" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.Controller">
     <items>
         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
             <children>
@@ -25,7 +25,7 @@
                                     <children>
                                         <HBox alignment="CENTER_LEFT" layoutX="10.0" layoutY="10.0" prefHeight="111.0" prefWidth="748.0" spacing="10.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
                                             <children>
-                                                <TextField fx:id="tableName" prefHeight="31.0" prefWidth="235.0" promptText="Table" />
+                                                <TextField fx:id="tableName" prefHeight="31.0" prefWidth="200.0" promptText="Table" />
                                                 <Button fx:id="createTable" mnemonicParsing="false" onAction="#createTable" prefWidth="70.0" text="Create" />
                                                 <Label fx:id="helpTextCreate" text="" />
                                             </children>
@@ -40,11 +40,12 @@
                                     <children>
                                         <HBox alignment="CENTER_LEFT" prefHeight="111.0" prefWidth="748.0" spacing="10.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
                                             <children>
-                                                <TextField fx:id="attributeName" prefHeight="31.0" prefWidth="235.0" promptText="Attribute" />
+                                                <TextField fx:id="attributeName" prefHeight="31.0" prefWidth="200.0" promptText="Attribute" />
                                                 <ComboBox fx:id="datatype" prefHeight="31.0" prefWidth="160.0" promptText="Select Datatype" />
                                                 <CheckBox fx:id="isPrimary" mnemonicParsing="false" onAction="#primarySelected" text="PK" />
                                                 <CheckBox fx:id="isForeign" mnemonicParsing="false" onAction="#foreignSelected" text="FK" />
-                                    <CheckBox mnemonicParsing="false" text="Not Null" fx:id="notNull"/>
+                                    <CheckBox fx:id="notNull" mnemonicParsing="false" text="Not Null" />
+                                    <TextField fx:id="attributeSize" prefHeight="26.0" prefWidth="70.0" promptText="Size" />
                                                 <Button fx:id="addButton" mnemonicParsing="false" onAction="#addAttribute" prefWidth="70.0" text="Add" />
                                             </children>
                                         </HBox>

@@ -7,6 +7,7 @@ public class Attribute {
     private Boolean isPrimaryKey;
     private Boolean isForeignKey;
     private Boolean isNotNull;
+    private int size;
 
     // Foreign Key Values
     private Table refTable;
@@ -54,6 +55,14 @@ public class Attribute {
 
     public void setRefTable(Table refTable) {
         this.refTable = refTable;
+    }
+
+    public int getSize() {
+        return size;
+    }
+
+    public void setSize(int size) {
+        this.size = size;
     }
 
     public String getDatatypSqlite() {

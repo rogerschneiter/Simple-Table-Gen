@@ -62,6 +62,7 @@ public class Controller implements Initializable {
     public Button exportButton;
     public Label exportHelpText;
     public CheckBox notNull;
+    public TextField attributeSize;
     private ArrayList<Table> allTables = new ArrayList<>();
 
     @Override
@@ -72,10 +73,12 @@ public class Controller implements Initializable {
                 isForeign.setDisable(true);
                 notNull.setDisable(true);
                 datatype.setDisable(true);
+                attributeSize.setDisable(true);
             } else {
                 isForeign.setDisable(false);
                 notNull.setDisable(false);
                 datatype.setDisable(false);
+                attributeSize.setDisable(false);
             }
         });
 
@@ -83,9 +86,11 @@ public class Controller implements Initializable {
             if (isForeign.isSelected()) {
                 isPrimary.setDisable(true);
                 datatype.setDisable(true);
+                attributeSize.setDisable(true);
             } else {
                 isPrimary.setDisable(false);
                 datatype.setDisable(false);
+                attributeSize.setDisable(false);
             }
         });
 
@@ -281,14 +286,27 @@ public class Controller implements Initializable {
         for (Attribute a : t.getAttributes()) {
             String entry = a.getDatatyp().toString();
             if (a.isPrimaryKey()) {
-                entry += " (Primary Key)";
+                entry += " (Primary Key";
             } else if (a.isForeignKey()) {
                 if (a.isNotNull()) {
-                    entry += " (Foreign Key, Not Null)";
+                    entry += " (Foreign Key, Not Null";
                 } else {
-                    entry += " (Foreign Key, Not Null)";
+                    entry += " (Foreign Key, Not Null";
                 }
             }
+
+            if (a.getSize() != 0 && a.isPrimaryKey()) {
+                entry += " (" + a.getSize() + ")";
+            }
+
+            if (a.getSize() != 0) {
+                entry += " (" + a.getSize();
+            }
+
+            if (a.isPrimaryKey() || a.isForeignKey() || a.getSize() != 0) {
+                entry += ")";
+            }
+
             datatypeValues.add(entry);
         }
 
@@ -333,6 +351,7 @@ public class Controller implements Initializable {
 
     public void addAttribute() {
         String attrName;
+        int sizeOfAttr;
         Datatype datatyp;
 
         attributeName.textProperty().removeListener(attrChangeListener);
@@ -376,8 +395,23 @@ public class Controller implements Initializable {
             return;
         }
 
+        if (attributeSize.getText() == null || attributeSize.getText() == "" || attributeSize.getText().length() == 0) {
+            sizeOfAttr = 0;
+        } else {
+            try {
+                sizeOfAttr = Integer.parseInt(attributeSize.getText());
+            } catch (Exception e) {
+                Components.simpleInfoBox("Info", "Please enter a numeric attribute size!");
+                return;
+            }
+        }
+
         // Create Attribute
         Attribute a = new Attribute(attrName, datatyp, isPrimary.isSelected(), isForeign.isSelected(), notNull.isSelected());
+
+        if (sizeOfAttr != 0) {
+            a.setSize(sizeOfAttr);
+        }
 
         // Set Foreignkey reference Values
         if (a.isForeignKey()) {

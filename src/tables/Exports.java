@@ -186,9 +186,17 @@ public class Exports {
         for (Attribute a : t.getAttributes()) {
             if (!a.isPrimaryKey()) {
                 if (a.isNotNull()) {
-                    mysqlContent += "\t" + a.getName() + " " + a.getDatatypMySQL() + " NOT NULL,\n";
+                    if (a.getSize() != 0) {
+                        mysqlContent += "\t" + a.getName() + " " + a.getDatatypMySQL() + "(" + a.getSize() + ") NOT NULL,\n";
+                    } else {
+                        mysqlContent += "\t" + a.getName() + " " + a.getDatatypMySQL() + " NOT NULL,\n";
+                    }
                 } else {
-                    mysqlContent += "\t" + a.getName() + " " + a.getDatatypMySQL() + ",\n";
+                    if (a.getSize() != 0) {
+                        mysqlContent += "\t" + a.getName() + " " + a.getDatatypMySQL() + "(" + a.getSize() + "),\n";
+                    } else {
+                        mysqlContent += "\t" + a.getName() + " " + a.getDatatypMySQL() + ",\n";
+                    }
                 }
             }
         }
@@ -267,9 +275,17 @@ public class Exports {
                             }
                         } else {
                             if (a.isNotNull()) {
-                                mysqlContent += "\t" + a.getName() + " " + a.getDatatypMySQL() + " NOT NULL,\n";
+                                if (a.getSize() != 0) {
+                                    mysqlContent += "\t" + a.getName() + " " + a.getDatatypMySQL() + "(" + a.getSize() + ") NOT NULL,\n";
+                                } else {
+                                    mysqlContent += "\t" + a.getName() + " " + a.getDatatypMySQL() + " NOT NULL,\n";
+                                }
                             } else {
-                                mysqlContent += "\t" + a.getName() + " " + a.getDatatypMySQL() + ",\n";
+                                if (a.getSize() != 0) {
+                                    mysqlContent += "\t" + a.getName() + " " + a.getDatatypMySQL() + "(" + a.getSize() + "),\n";
+                                } else {
+                                    mysqlContent += "\t" + a.getName() + " " + a.getDatatypMySQL() + ",\n";
+                                }
                             }
                         }
                     }
