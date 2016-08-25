@@ -63,6 +63,7 @@ public class Controller implements Initializable {
     public Label exportHelpText;
     public CheckBox notNull;
     public TextField attributeSize;
+    public ComboBox typeOfExport;
     private ArrayList<Table> allTables = new ArrayList<>();
 
     @Override
@@ -93,6 +94,10 @@ public class Controller implements Initializable {
                 attributeSize.setDisable(false);
             }
         });
+
+        ObservableList<String> values1 = FXCollections.observableArrayList();
+        values1.addAll("Inserts", "Create");
+        typeOfExport.setItems(values1);
 
         ObservableList<String> values2 = FXCollections.observableArrayList();
         values2.addAll("Text", "Decimal", "Integer");
@@ -554,14 +559,33 @@ public class Controller implements Initializable {
             return;
         }
 
+        if (typeOfExport.getValue() == null) {
+            Components.simpleInfoBox("Info", "Choose a type of exporting!");
+            return;
+        }
+
         if (tableToExport.getValue() == null) {
             Components.simpleInfoBox("Info", "Choose a table to export!");
             return;
         }
 
-        if (tableToExport.getValue().equals("Export All")) {
+        if (tableToExport.getValue().equals("Export All") && typeOfExport.getValue().equals("Create")) {
             exportAll();
             return;
+        } else {
+            String export = wayOfExport.getValue();
+
+            switch (export) {
+                case "HTML":
+                    Components.simpleInfoBox("Info", "HTML Export ALL Inserts to be added!");
+                    break;
+                case "SQLite":
+                    Components.simpleInfoBox("Info", "SQLITE Export ALL Inserts to be added!");
+                    break;
+                case "MySQL":
+                    Components.simpleInfoBox("Info", "MYSQL Export ALL Inserts to be added!");
+                    break;
+            }
         }
 
         String curTbl = tableToExport.getValue();
@@ -577,18 +601,38 @@ public class Controller implements Initializable {
             return;
         }
 
-        String export = wayOfExport.getValue();
+        if (typeOfExport.getValue().equals("Inserts")) {
 
-        switch (export) {
-            case "HTML":
-                Exports.toHTML(tToExport);
-                break;
-            case "SQLite":
-                Exports.toSQLite(tToExport);
-                break;
-            case "MySQL":
-                Exports.toMySQL(tToExport);
-                break;
+            String export = wayOfExport.getValue();
+
+            switch (export) {
+                case "HTML":
+                    Components.simpleInfoBox("Info", "HTML Export Inserts to be added!");
+                    break;
+                case "SQLite":
+                    Components.simpleInfoBox("Info", "SQLITE Export Inserts to be added!");
+                    break;
+                case "MySQL":
+                    Components.simpleInfoBox("Info", "MYSQL Export Inserts to be added!");
+                    break;
+            }
+
+        } else if (typeOfExport.getValue().equals("Create")) {
+
+            String export = wayOfExport.getValue();
+
+            switch (export) {
+                case "HTML":
+                    Exports.toHTML(tToExport);
+                    break;
+                case "SQLite":
+                    Exports.toSQLite(tToExport);
+                    break;
+                case "MySQL":
+                    Exports.toMySQL(tToExport);
+                    break;
+            }
+
         }
 
         tabPane.getSelectionModel().selectedItemProperty().removeListener(changeTabWhileHelpListener);

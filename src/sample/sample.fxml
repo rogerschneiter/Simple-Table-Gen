@@ -75,26 +75,6 @@
                                 </AnchorPane>
                             </content>
                         </Tab>
-                        <Tab onSelectionChanged="#deactivateTabs" text="EXPORT">
-                            <content>
-                                <AnchorPane fx:id="tabExport" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-                                    <children>
-                                        <HBox alignment="CENTER_LEFT" prefHeight="111.0" prefWidth="748.0" spacing="10.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
-                                            <children>
-                                                <ComboBox fx:id="tableToExport" prefHeight="31.0" prefWidth="160.0" promptText="Select Table" />
-                                                <ComboBox fx:id="wayOfExport" prefHeight="31.0" prefWidth="160.0" promptText="Select Export" />
-                                                <Button fx:id="exportButton" mnemonicParsing="false" onAction="#export" prefWidth="70.0" text="Export">
-                                                    <HBox.margin>
-                                                        <Insets />
-                                                    </HBox.margin>
-                                                </Button>
-                                                <Label fx:id="exportHelpText" />
-                                            </children>
-                                        </HBox>
-                                    </children>
-                                </AnchorPane>
-                            </content>
-                        </Tab>
                         <Tab onSelectionChanged="#deactivateTabs" text="INSERT">
                             <content>
                                 <AnchorPane fx:id="tabInsert" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
@@ -103,6 +83,27 @@
                                             <children>
                                                 <Button fx:id="newInsert" mnemonicParsing="false" onAction="#newInsert" text="New Insert" />
                                                 <Label text="Currently only works for tables without foreign keys!" />
+                                            </children>
+                                        </HBox>
+                                    </children>
+                                </AnchorPane>
+                            </content>
+                        </Tab>
+                        <Tab onSelectionChanged="#deactivateTabs" text="EXPORT">
+                            <content>
+                                <AnchorPane fx:id="tabExport" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                    <children>
+                                        <HBox alignment="CENTER_LEFT" prefHeight="111.0" prefWidth="748.0" spacing="10.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
+                                            <children>
+                                                <ComboBox fx:id="tableToExport" prefHeight="31.0" prefWidth="160.0" promptText="Select Table" />
+                                    <ComboBox fx:id="typeOfExport" prefHeight="31.0" prefWidth="160.0" promptText="Select Type" />
+                                                <ComboBox fx:id="wayOfExport" prefHeight="31.0" prefWidth="160.0" promptText="Select Export" />
+                                                <Button fx:id="exportButton" mnemonicParsing="false" onAction="#export" prefWidth="70.0" text="Export">
+                                                    <HBox.margin>
+                                                        <Insets />
+                                                    </HBox.margin>
+                                                </Button>
+                                                <Label fx:id="exportHelpText" />
                                             </children>
                                         </HBox>
                                     </children>

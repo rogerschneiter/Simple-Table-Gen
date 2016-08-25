@@ -36,6 +36,8 @@ public class Components {
         b.setOnAction(e -> window.close());
 
         VBox layout = new VBox(20);
+        Insets s = new Insets(15,15,15,15);
+        layout.setPadding(s);
         layout.getChildren().addAll(l, b);
         layout.setAlignment(Pos.CENTER);
 
